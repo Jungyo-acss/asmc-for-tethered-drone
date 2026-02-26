@@ -1,0 +1,62 @@
+
+<launch>
+    <!-- Launch basic parameters -->
+    
+    <!--
+    <arg name="fcu_url" default="udp://:14540@127.0.0.1:14557" />
+    <arg name="gcs_url" default="" />
+    <arg name="tgt_system" default="1" />
+    <arg name="tgt_component" default="1" />
+    -->
+    
+    <!-- Launch MAVROS -->
+    <!--
+    <include file="$(find mavros)/launch/px4.launch">
+        <arg name="fcu_url" value="$(arg fcu_url)" />
+        <arg name="gcs_url" value="$(arg gcs_url)" >
+    </include >
+    -->
+
+    <!-- Launch PID Position Control Node -->
+    <node pkg="offb_example" type="pid_position_control_node" name="pid_position_control" output="screen">
+        <!-- PID Parameters -->
+        <rosparam>
+            kp_xy: 1.0
+            ki_xy: 0.0
+            kd_xy: 0.0
+            kp_z: 1.0
+            ki_z: 0.0
+            kd_z: 0.0
+            max_integral_xy: 1.0
+            max_integral_z: 1.0
+            max_output_xy: 2.0
+            max_output_z: 2.0
+            velocity_damping_xy: 0.1
+            velocity_damping_z: 0.1
+            deadzone_xy: 0.05
+            deadzone_z: 0.05
+        </rosparam>
+    </node>
+
+    <!-- Launch ASMC Attitude Control Node -->
+    <node pkg="offb_example" type="asmc_attitude_control_node" name="asmc_attitude_control" output="screen">
+        <remap from="mavros/local_position/pose" to="/mavros/local_position/pose" />
+        <remap from="mavros/local_position/velocity_local" to="/mavros/local_position/velocity_local" />
+        <remap from="mavros/setpoint_position/local" to="/mavros/setpoint_position/local" />
+    </node>
+
+    <!-- Launch Main Offboard Node -->
+    <node pkg="offb_example" type="offb_node" name="offb_node" output="screen" />
+
+    <!-- Launch RQT reconfigure -->
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="rqt_reconfigure" output="screen" />
+    
+    <!-- disturbance -->
+    <!--
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_model" 
+          args="-file /home/acss/PX4-Autopilot/Tools/sitl_gazebo/models/if750a/if750a.sdf -sdf -model if750a" 
+          output="screen" />
+    -->    
+        
+
+</launch>
