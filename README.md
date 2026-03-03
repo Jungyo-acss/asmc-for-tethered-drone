@@ -1,6 +1,6 @@
 # ASMC-Controller
 
-Implementation-oriented **Adaptive Sliding Mode Control (ASMC)** framework for a cooperative **tethered UAV–UGV** system, integrated with **PX4 SITL + Gazebo + ROS**.
+Implementation-oriented **Adaptive Sliding Mode Control (ASMC)** framework for a cooperative **Winch-tethered UAV** system, integrated with **PX4 SITL + Gazebo + ROS**.
 
 ---
 
