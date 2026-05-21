@@ -8,27 +8,36 @@ Implementation-oriented **Adaptive Sliding Mode Control (ASMC)** framework for a
 
 ### 1.1 Hierarchical Outer–Inner Loop
 
-This project uses a cascaded control architecture:
+This project uses a cascaded control architecture for a winch-tethered quadrotor:
 
-- **Outer translational loop**: generates a commanded acceleration using a sliding surface on position/velocity errors  
-- **Thrust–attitude mapping**: converts commanded acceleration into desired collective thrust and desired attitude  
-- **Inner attitude loop**: geometric ASMC on **SO(3)** to robustly track the desired attitude  
-- **Winch regulation**: distance-based tether length control to reduce slack–taut transients
+- **Outer translational loop**: computes the commanded acceleration from position and velocity tracking errors using an adaptive sliding mode control structure.
+- **Thrust–attitude mapping**: converts the commanded acceleration into the desired collective thrust and desired attitude.
+- **Inner attitude loop**: performs robust geometric attitude tracking on **SO(3)** using the attitude error, angular-velocity error, and attitude error function.
+- **Winch regulation**: regulates the tether length based on the relative distance to reduce slack–taut transients.
 
-### 1.2 Sliding Surfaces 
+### 1.2 Control Error Variables
 
-- **Outer loop sliding surface**
-  - $s_p = e_v + \Lambda_p e_p$
+- **Outer-loop sliding surface**
 
-- **Inner loop sliding surface**
-  - $s_R = e_\Omega + \Lambda_R e_R$ 
+  $$
+  s_p = e_v + \Lambda_p e_p
+  $$
+
+- **Inner-loop attitude errors**
+```math
+e_R = \frac{1}{2}\left(R_d^\top R - R^\top R_d\right)^\vee,
+\qquad
+e_\Omega = \Omega - R^\top R_d \Omega_d
+```
+
+where $e_p$ and $e_v$ are the position and velocity errors, and $e_R$ and $e_\Omega$ are the geometric attitude and angular-velocity errors on $SO(3)$.
 
 ### 1.3 Practical Add-ons
 
-- Adaptive switching gain for disturbance rejection (tether force / model mismatch)
-- Adaptive throttle bias compensation for slow-varying loading variation during tether deployment/retrieval
-- Distance-based winch regulation to mitigate abrupt tension transients
-
+- Adaptive switching gain for bounded tether-induced disturbances and model mismatch.
+- Boundary-layer saturation for chattering reduction.
+- Adaptive throttle bias compensation for slow-varying loading changes during tether deployment/retrieval.
+- Distance-based winch regulation to mitigate abrupt slack–taut transients.
 ---
 
 ## 2. Model
