@@ -125,5 +125,37 @@ roslaunch offb_example offb_example.launch
 python3 apply_force_2.py -**magnitude**-**duration**
 ```
 
-### 4.5 Tune Parameters(GUI)
-Parameters can be tuned via GUI based on the cfg file(dynamic reconfigure)
+### 4.5 Tune Parameters
+
+Controller parameters can be adjusted online through the GUI using ROS dynamic reconfigure.
+
+The parameters reported in the paper were selected through **manual tuning in the PX4/Gazebo environment**. A practical tuning procedure is as follows:
+
+1. **Nominal translational gains**
+   - First tune `K_p` and `K_v` without large external disturbances to obtain a stable and well-damped tracking response.
+   - `Lambda_p` determines the relative contribution of position error to the sliding variable:
+     ```math
+     s_p = e_v + \Lambda_p e_p
+     ```
+
+2. **Boundary-layer parameters**
+   - Tune `phi_p` and `phi_R` to balance tracking accuracy and chattering.
+   - Smaller values provide stronger switching action but may increase high-frequency oscillations.
+   - Larger values reduce chattering at the cost of a larger tracking-error neighborhood.
+
+3. **Adaptive switching gains**
+   - Set `k_min` to provide a small baseline robust action.
+   - Increase `k_max` until tether-induced disturbances can be rejected without producing excessive control commands.
+   - Tune the adaptation rate `gamma` to control how quickly the switching gains respond to persistent errors.
+
+4. **Adaptive thrust-bias compensation**
+   - Set the bias bounds `Delta_f_min` and `Delta_f_max` to cover the expected slow-varying tether load while remaining within the available thrust range.
+
+5. **Winch regulation**
+   - Tune the winch regulation gain to obtain sufficiently fast tether-length tracking without inducing oscillatory spool motion.
+   - The offset `l_0` determines the desired tether slack, while `omega_max` limits the winch speed.
+
+The final parameters used in the simulations are listed in Table I of the paper and can be used as initial values for reproducing the reported experiments.
+
+
+
